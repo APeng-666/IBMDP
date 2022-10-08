@@ -1,8 +1,9 @@
-﻿import torch
+import torch
 import numpy as np
 import time
 import argparse
 import gym
+import copy
 
 from wrapper import IBEnvDisWrapper
 from dtp import DTP
@@ -17,13 +18,13 @@ def timer(start,end):
 def evaluate_dtp(env, decision_tree_policy, eval_runs, seed):
     env.seed(seed+1)
     scores = []
-    node = decision_tree_policy
     for _ in range(eval_runs):
         actions=[]
         state = env.reset()
         score = 0
         done = False
         while not done:
+            node = copy.deepcopy(decision_tree_policy)
             while not node.leaf:
                 if state[node.feature] <= node.value:
                     node = node.child_L
